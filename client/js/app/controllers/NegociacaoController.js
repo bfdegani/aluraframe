@@ -10,30 +10,13 @@ class NegociacaoController {
     this._inputQuantidade = $('#quantidade');
     this._inputValor = $('#valor');
 
-    //declara lista de negoviações (model e view)
+    //declara lista de negoviações (model e view) e faz o binding entre model e view
     this._negociacoesView = new NegociacoesView($('#negociacoesView'));
+    this._listaNegociacoes = new Bind( new ListaNegociacoes(), this._negociacoesView, ['adiciona', 'apaga']);
 
-    this._listaNegociacoes = new Proxy(new ListaNegociacoes(), {
-              get(target, prop, receiver){
-                if(['adiciona', 'apaga'].includes(prop) && typeof(target[prop]) === typeof(Function)) { // verifica se é uma das funções mapeadas (Function é uma função existente na liguagem)
-                  return function(){
-                    console.log(`interceptando ${prop}`);
-                    Reflect.apply(target[prop], target, arguments); //invoca a função, passando o array implcito de argumentos da função existente no javascript
-                    self._negociacoesView.update(target);
-                  }
-                }
-                else return Reflect.get(target, prop, receiver); // retorna propriedade
-              }
-          });
-
-    this._negociacoesView.update(this._listaNegociacoes);
-
-
-
-
-    this._mensagem = new Mensagem();
+    //declara mensagem (model e view) e faz o binding entre model e view
     this._mensagemView = new MensagemView($('#mensagemView'));
-    this._mensagemView.update(this._mensagem);
+    this._mensagem = new Bind( new Mensagem(), this._mensagemView, ['texto']);
 
   }
 
@@ -54,14 +37,12 @@ class NegociacaoController {
 
     this._listaNegociacoes.adiciona(this._criaNegociacao());
     this._mensagem.texto = 'Negociação incluída com sucesso.';
-    this._mensagemView.update(this._mensagem);
     this._limpaFormulario();
   }
 
   apaga(){
     this._listaNegociacoes.apaga();
     this._mensagem.texto = 'Lista de negociações apagada com sucesso.';
-    this._mensagemView.update(this._mensagem);
   }
 
   _criaNegociacao(){
