@@ -2,7 +2,6 @@ class NegociacaoController {
 
   constructor()
   {
-    let self = this; //apontamento a ser usado nos handlers dos proxies para ListaNegociacoes e Mensagem
     let $ = document.querySelector.bind(document); //cria uma referencia ao querySelector, permitindo um acesso "jquery like". Importante o bind, do contrario a função não teria o contexto correto.
 
     //declarando os campos do formulário como propriedades da classe, otimiza o acesso ao DOM (quando comparado a ler o input dentro do evento roda vez que esse ocorre)
@@ -11,13 +10,16 @@ class NegociacaoController {
     this._inputValor = $('#valor');
 
     //declara lista de negoviações (model e view) e faz o binding entre model e view
-    this._negociacoesView = new NegociacoesView($('#negociacoesView'));
-    this._listaNegociacoes = new Bind( new ListaNegociacoes(), this._negociacoesView, ['adiciona', 'apaga']);
+    this._listaNegociacoes = new Bind(
+      new ListaNegociacoes(),
+      new NegociacoesView($('#negociacoesView')),
+      'adiciona', 'apaga');
 
     //declara mensagem (model e view) e faz o binding entre model e view
-    this._mensagemView = new MensagemView($('#mensagemView'));
-    this._mensagem = new Bind( new Mensagem(), this._mensagemView, ['texto']);
-
+    this._mensagem = new Bind(
+      new Mensagem(),
+      new MensagemView($('#mensagemView')),
+      'texto');
   }
 
   get inputData(){
