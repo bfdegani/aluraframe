@@ -20,12 +20,10 @@ class ListaNegociacoes {
   }
 
   ordena(criterio){
-    console.log('ordena');
     this._negociacoes.sort(criterio);
   }
 
   inverte(){
-    console.log('inverte');
     this._negociacoes.reverse();
   }
 }

@@ -38,7 +38,6 @@ class NegociacaoController {
 
   adiciona(event){
     event.preventDefault();
-
     this._listaNegociacoes.adiciona(this._criaNegociacao());
     this._mensagem.texto = 'Negociação incluída com sucesso.';
     this._limpaFormulario();
@@ -60,7 +59,6 @@ class NegociacaoController {
   }
 
   ordena(coluna){
-    console.log(this._ordemAtual);
     if(this._ordemAtual == coluna){
       this._listaNegociacoes.inverte();
     }
@@ -82,5 +80,6 @@ class NegociacaoController {
     this._inputQuantidade.value = 1;
     this._inputValor.value = 0.0;
     this._inputData.focus();
+    this._ordemAtual = '';
   }
 }
