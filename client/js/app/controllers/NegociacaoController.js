@@ -44,19 +44,12 @@ class NegociacaoController {
 
   importa(){
     let service = new NegociacaoService();
-
-    Promise.all([ //Promisse.all executa um array de promises na sequencia definida no array
-      service.obterNegociacoes(0),
-      service.obterNegociacoes(1),
-      service.obterNegociacoes(2)
-    ]).then(resolveArray => { //array com o retorno de resolve de cada promise
-      console.log(resolveArray);
-      resolveArray
-        .reduce((negociacoes, resolve) => negociacoes.concat(resolve), []) // executa reduce para concatenar cada retorno em um único array de negociações
-        .forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
-      this._mensagem.texto = 'Negociações importadas com sucesso.';
-    })
-    .catch(erro => this._mensagem.texto = erro); //retorno de reject da promise que deu erro
+    service.obterNegociacoes()
+      .then(negociacoes => {
+        negociacoes.forEach(n => this._listaNegociacoes.adiciona(new Negociacao(new Date(n.data), n.quantidade, n.valor))); // adiciona ao modelo cada negociação existente no array unificado
+        this._mensagem.texto = 'Negociações importadas com sucesso.';
+      })
+      //.catch(erro => this._mensagem.texto = erro); //retorno de reject da promise que deu erro
   }
 
   apaga(){

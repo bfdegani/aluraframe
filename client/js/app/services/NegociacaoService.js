@@ -4,26 +4,15 @@ class NegociacaoService{
     this._http = new HttpService();
   }
 
-  obterNegociacoes(periodo){
-    /* periodo:
-    0: 'semana'
-    1: 'anterior'
-    2: 'retrasada'
-    */
-    let nomeServico = ['semana', 'anterior', 'retrasada'];
-
-    /* trabalhando com promisses:
-      resolve é uma função para a qual é passado o retorno de sucesso da Promise.
-      reject é uma função para a qual é passado o retorno de erro da Promise
-    */
-    return new Promise((resolve, reject) => {
-      this._http
-        .get(`negociacoes/${nomeServico[periodo]}`)
-        .then(negociacoes => resolve(negociacoes.map(objeto => new Negociacao(new Date(objeto.data), objeto.quantidade, objeto.valor))))
-        .catch(erro => {
-          console.log(erro);
-          reject('Não foi possível importar negociações');
-        })
+  obterNegociacoes(){
+    //Promisse.all executa um array de promises na sequencia definida no array
+    return Promise.all([this._http.get('negociacoes/semana'), this._http.get('negociacoes/anterior'), this._http.get('negociacoes/retrasada')])
+      .then(periodos => {
+        let negociacoes = periodos.reduce((dados, periodo) => dados.concat(periodo), []);
+        return negociacoes;
+      })  // executa reduce para concatenar o retorno de cada promise em um único array de negociações
+      .catch(erro => { // trata reject da promise que deu erro
+        throw new Error(erro);
       });
-    }
+  }
 }
