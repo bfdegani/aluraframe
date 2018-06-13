@@ -13,7 +13,9 @@ class NegociacaoController {
     this._listaNegociacoes = new Bind(
       new ListaNegociacoes(),
       new NegociacoesView($('#negociacoesView')),
-      'adiciona', 'apaga');
+      'adiciona', 'apaga', 'ordena', 'inverte');
+
+    this._ordemAtual = '';
 
     //declara mensagem (model e view) e faz o binding entre model e view
     this._mensagem = new Bind(
@@ -55,6 +57,17 @@ class NegociacaoController {
   apaga(){
     this._listaNegociacoes.apaga();
     this._mensagem.texto = 'Lista de negociações apagada com sucesso.';
+  }
+
+  ordena(coluna){
+    console.log(this._ordemAtual);
+    if(this._ordemAtual == coluna){
+      this._listaNegociacoes.inverte();
+    }
+    else{
+      this._listaNegociacoes.ordena((a,b) => a[coluna] - b[coluna])
+      this._ordemAtual = coluna;
+    }
   }
 
   _criaNegociacao(){
